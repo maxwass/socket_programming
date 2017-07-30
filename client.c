@@ -105,6 +105,12 @@ int main ( int argc, char *argv[] ) {
     //send data
     int n = send(sockfd, msg, strlen(msg), 0);
     printf("\nSend: %i/%i bytes written\n", n ,(int)strlen(msg));
+    
+    char read_buffer[100];
+    int r = read(sockfd,read_buffer,100);
+    printf("\nRead: %s \n bytes read %i \n",read_buffer, r);
+    
+    
     //freeaddrinfo(res); freeaddrinfo(&hints); freeaddrinfo(rp);
 }
 

@@ -78,34 +78,43 @@ int main ( int argc, char *argv[] ) {
     //bind socket to local address (port)
     if(bind(sockfd, rp->ai_addr, rp->ai_addrlen)< 0) {perror("ERROR on binding");}
 
+    //listen for up to 10 connections
     listen(sockfd, 10); //listen for up to 10 connnections on this port
 
+    //begin accepting connections
     struct sockaddr_storage their_addr;
     int addr_size;
     addr_size = sizeof(their_addr);
     
     int new_sockfd;
     new_sockfd = accept(sockfd, (struct sockaddr *)&their_addr, (socklen_t *)&addr_size);
-    if(sockfd < 0) perror("Error on accepting connection!");
+    if(new_sockfd < 0) perror("Error on accepting connection!");
     else printf("Successfully Accepted Connection: %i \n", new_sockfd);
 
 
-
-/*
-
-
-    char read_buffer[100];
-    int r = read(sockfd,read_buffer,100);
+    //being recieving data
+    uint8_t size_buffer = 100;
+    char read_buffer[size_buffer];
+    int r = recv(new_sockfd, &read_buffer, size_buffer, 0);
     printf("\nRead: %s \n bytes read %i \n",read_buffer, r);
-    
+ 
+    usleep(100000);
 
-    //send data
+    //send reply
     char reply[100];
-    strcpy( strcat("I recieved: ", read_buffer), reply);
-    int n = send(sockfd, reply, strlen(reply), 0);
-    printf("\nSend: %i/%i bytes written\n", n ,(int)strlen(reply));
+    char recv_msg[] = "I recieved ";
+    int len1 = strlen(recv_msg);
+    int len2 = strlen(read_buffer);
+    memcpy(reply, recv_msg, len1);
+    memcpy(reply+len1, read_buffer, len2+1); //+1 to copy the null-terminator
+    printf("%s \n", reply);
     
-*/
+    /*
+    strcpy( strcat("I recieved: ", read_buffer), reply);
+    printf("after\n");
+    int n = send(new_sockfd, reply, strlen(reply), 0);
+    printf("\nSend: %i/%i bytes written\n", n ,(int)strlen(reply));
+    */
     //freeaddrinfo(res); freeaddrinfo(&hints); freeaddrinfo(rp);
 }
 

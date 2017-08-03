@@ -108,13 +108,9 @@ int main ( int argc, char *argv[] ) {
     memcpy(reply, recv_msg, len1);
     memcpy(reply+len1, read_buffer, len2+1); //+1 to copy the null-terminator
     printf("%s \n", reply);
-    
-    /*
-    strcpy( strcat("I recieved: ", read_buffer), reply);
-    printf("after\n");
-    int n = send(new_sockfd, reply, strlen(reply), 0);
-    printf("\nSend: %i/%i bytes written\n", n ,(int)strlen(reply));
-    */
+    int s = send(new_sockfd, &reply, strlen(reply), 0);
+    printf("bytes sent in reply: %i, bytes should have been sent %i \n", s, len1+len2);
+
     //freeaddrinfo(res); freeaddrinfo(&hints); freeaddrinfo(rp);
 }
 

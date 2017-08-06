@@ -11,6 +11,10 @@
 #include <arpa/inet.h> //convert ip address to human readable (and back)
 #include <netdb.h>
 
+pthread_t client_thread;
+
+void* client_handler(void*);
+
 int main ( int argc, char *argv[] ) {
  
     //parse CLI
@@ -86,11 +90,20 @@ int main ( int argc, char *argv[] ) {
     int addr_size;
     addr_size = sizeof(their_addr);
     
-    int new_sockfd;
+    int new_sockfd = (int) malloc(sizeof(int));
     new_sockfd = accept(sockfd, (struct sockaddr *)&their_addr, (socklen_t *)&addr_size);
     if(new_sockfd < 0) perror("Error on accepting connection!");
     else printf("Successfully Accepted Connection: %i \n", new_sockfd);
 
+    /* initialized with default attributes */
+    printf("    before create thread\n");
+    usleep(3000000);
+    if(pthread_create(&client_thread, NULL, client_handler, &sockfd) <0){
+        perror("Thread creation failure!!");
+    }
+    usleep(3000000);
+    printf("    after create thread\n");
+    pthread_join(client_thread, NULL);
 
     //being recieving data
     uint8_t size_buffer = 100;
@@ -109,8 +122,23 @@ int main ( int argc, char *argv[] ) {
     memcpy(reply+len1, read_buffer, len2+1); //+1 to copy the null-terminator
     printf("%s \n", reply);
     int s = send(new_sockfd, &reply, strlen(reply), 0);
-    printf("bytes sent in reply: %i, bytes should have been sent %i \n", s, len1+len2);
+    printf("bytes sent in reply: %i/%i \n", s, len1+len2);
 
     //freeaddrinfo(res); freeaddrinfo(&hints); freeaddrinfo(rp);
 }
 
+
+void* client_handler(void * sockfd){
+    usleep(1000000);
+    printf("In CLIENT_HANDLER \n");
+    
+    usleep(1000000);
+    printf("B4 SLEEP FAULT!!!!!!!!!!!!!\n");
+    
+    
+    usleep(3000000);
+    printf("AFTER SLEEP SEG FAULT!!!!!!!!!!!!!\n");
+    
+    //pthread_exit(0);
+    return NULL;
+}

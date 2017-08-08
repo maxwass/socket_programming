@@ -9,4 +9,4 @@ gcc client.c -o client
 gcc server.c -o server
 
 echo "Executing server and client ..."
-./server 3490 & ./client localhost 3490 message_from_client_____1_ & ./client localhost 3490 message_from_client_____2_ &  ./client localhost 3490 message_from_client_____3_
+./server 3490 & ./client localhost 3490 _111111111_ & ./client localhost 3490 _22222222_ &  ./client localhost 3490 _333333333_
